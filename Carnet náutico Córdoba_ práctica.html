@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Carnet náutico Córdoba: práctica</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+  --bg:#eef3f6; --ink:#10263a; --muted:#587084; --card:#ffffff; --line:#cfdbe4;
+  --navy:#12304a; --navy-ink:#ffffff; --accent:#e8590c; --accent-soft:#fff0e6;
+  --ok:#1b6e45; --okbg:#e1f2e8; --bad:#a8231b; --badbg:#fbe6e3; --sel:#e4eef6;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0c1a27; --ink:#e5eef5; --muted:#9bb0c1; --card:#13293b; --line:#26435a;
+    --navy:#0a1621; --navy-ink:#e5eef5; --accent:#ff8a4c; --accent-soft:#3a2417;
+    --ok:#6fd49f; --okbg:#133a2a; --bad:#ff9a92; --badbg:#431a17; --sel:#1c3a52;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0c1a27; --ink:#e5eef5; --muted:#9bb0c1; --card:#13293b; --line:#26435a;
+  --navy:#0a1621; --navy-ink:#e5eef5; --accent:#ff8a4c; --accent-soft:#3a2417;
+  --ok:#6fd49f; --okbg:#133a2a; --bad:#ff9a92; --badbg:#431a17; --sel:#1c3a52;
+}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:17px;line-height:1.55}
+h1,h2,h3{font-family:"Barlow Semi Condensed","Arial Narrow",system-ui,sans-serif;line-height:1.15;margin:0}
+header{background:var(--navy);color:var(--navy-ink);padding:22px 18px 6px}
+.wrap{max-width:760px;margin:0 auto}
+header h1{font-size:30px;font-weight:700;letter-spacing:.2px}
+header p{margin:6px 0 16px;opacity:.8;font-size:15px}
+nav{display:flex;gap:4px}
+nav button{font:inherit;font-family:"Barlow Semi Condensed",sans-serif;font-weight:600;font-size:18px;color:var(--navy-ink);background:transparent;border:0;padding:10px 18px;border-radius:10px 10px 0 0;cursor:pointer;opacity:.7}
+nav button[aria-selected="true"]{background:var(--bg);color:var(--ink);opacity:1}
+nav button:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+main{padding:20px 18px 60px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 18px}
+.card+.card{margin-top:14px}
+.alert{border-left:6px solid var(--accent);background:var(--accent-soft)}
+h2{font-size:25px;margin-bottom:10px}
+h3{font-size:20px;margin:0 0 8px}
+ul{margin:6px 0 0;padding-left:20px}
+li{margin:5px 0}
+b.n{font-weight:700;color:var(--accent)}
+table{border-collapse:collapse;width:100%;font-size:16px}
+td,th{border-bottom:1px solid var(--line);padding:7px 8px;text-align:left;vertical-align:top}
+.scroll{overflow-x:auto}
+.muted{color:var(--muted);font-size:15px}
+.menu{display:grid;gap:12px}
+.menu button.big{font:inherit;text-align:left;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;cursor:pointer;color:var(--ink)}
+.menu button.big strong{display:block;font-family:"Barlow Semi Condensed",sans-serif;font-size:21px}
+.menu button.big span{color:var(--muted);font-size:15px}
+.menu button.big.hot{border-color:var(--accent);background:var(--accent-soft)}
+.menu button.big:hover{border-color:var(--accent)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.chips button{font:inherit;font-size:15px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:999px;padding:6px 14px;cursor:pointer}
+.chips button:hover{border-color:var(--accent)}
+.chips button.on{background:var(--navy);color:var(--navy-ink);border-color:var(--navy);font-weight:700}
+.addrow{display:flex;gap:8px;margin-top:12px}
+.addrow input{flex:1;min-width:0;font:inherit;font-size:16px;padding:8px 12px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.notice{background:var(--accent-soft);border:1px solid var(--accent);border-radius:10px;padding:10px 14px;margin-bottom:12px;font-size:15px}
+.stats{display:flex;gap:18px;flex-wrap:wrap;margin:14px 0;font-size:15px;color:var(--muted)}
+.stats b{color:var(--ink)}
+.topline{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;font-size:15px;color:var(--muted)}
+.bar{height:6px;background:var(--line);border-radius:6px;overflow:hidden;margin-bottom:16px}
+.bar i{display:block;height:100%;background:var(--accent)}
+.q{font-family:"Barlow Semi Condensed",sans-serif;font-size:23px;font-weight:600;line-height:1.25;margin:0 0 14px}
+.opts{display:grid;gap:10px}
+.opt{font:inherit;text-align:left;width:100%;background:var(--card);color:var(--ink);border:2px solid var(--line);border-radius:12px;padding:13px 14px;cursor:pointer;display:block}
+.opt:hover:not([disabled]){border-color:var(--accent)}
+.opt[disabled]{cursor:default}
+.opt.ok{border-color:var(--ok);background:var(--okbg)}
+.opt.bad{border-color:var(--bad);background:var(--badbg)}
+.opt.sel{border-color:var(--navy);background:var(--sel)}
+.fb{margin-top:14px;border-radius:12px;padding:14px 16px}
+.fb.ok{background:var(--okbg);border:1px solid var(--ok)}
+.fb.bad{background:var(--badbg);border:1px solid var(--bad)}
+.fb strong{font-family:"Barlow Semi Condensed",sans-serif;font-size:19px}
+.fb p{margin:6px 0 0}
+.nav{display:flex;justify-content:space-between;gap:10px;margin-top:16px}
+.btn{font:inherit;font-family:"Barlow Semi Condensed",sans-serif;font-weight:600;font-size:18px;border-radius:10px;padding:10px 20px;cursor:pointer;border:2px solid var(--navy);background:var(--navy);color:var(--navy-ink)}
+.btn.small{font-size:16px;padding:8px 14px}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn[disabled]{opacity:.4;cursor:default}
+.score{font-family:"Barlow Semi Condensed",sans-serif;font-size:46px;font-weight:700}
+.rev{border-top:1px solid var(--line);padding-top:12px;margin-top:12px}
+.rev .t{font-weight:700}
+.rev .a{color:var(--bad)}
+.rev .c{color:var(--ok)}
+.flag{display:block;margin:0 auto 14px;max-width:180px;border:1px solid var(--line)}
+.link{background:none;border:0;color:var(--accent);font:inherit;cursor:pointer;text-decoration:underline;padding:0}
+@media (max-width:480px){header h1{font-size:25px}.q{font-size:21px}body{font-size:16px}}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>Carnet de conductor náutico</h1>
+    <p>Dirección de Seguridad Náutica, Córdoba. Basado en el manual 2023.</p>
+  </div>
+</header>
+<main><div class="wrap" id="app"></div></main>
+
+<script>
+/* [n, tema, pregunta, CORRECTA, incorrecta1, incorrecta2, explicación, (opcional) otras respuestas también correctas]
+   Los ids 1000+N son preguntas del manual anterior (número N). El orden de las opciones se mezcla al mostrarlas. */
+const SECS={G:"General",L:"Lancha",M:"Moto de agua",Z:"Zonificación",P:"Práctico"};
+const Q=[
+[1,"G","¿Qué debo tener en cuenta al momento de elegir un salvavidas?","Que sea adecuado al peso y tamaño del tripulante, cómodo según la actividad, abrigado, resistente, con material de flotación aprobado y en buenas condiciones.","Que sea naranja, tipo poncho, con sellos de aprobación, tiras resistentes y almohadilla en la espalda para apoyar la cabeza si estoy inconsciente.","Que sea de alto impacto, tipo chaleco, para usar debajo de la campera, con relleno de telgopor y más de 8 kg de flotación positiva.","Lo que importa es que te quede bien (peso y tamaño), sea cómodo, esté aprobado y en buen estado. Las otras opciones son trampas: describen un modelo muy específico (poncho naranja, telgopor, 8 kg) como si fuera obligatorio."],
+[2,"G","¿El ser un buen nadador es garantía para no ahogarme?","Ayuda, aunque 2 de cada 3 ahogados son buenos nadadores.","Sí, ser buen nadador me permite nadar con cualquier condición de viento y altura de ola.","Sí, ya que 1 de cada 10 ahogados es buen nadador.","Nadar bien no te salva. El número a memorizar es 2 de cada 3: la mayoría de los ahogados sabían nadar."],
+[3,"G","Según estadísticas internacionales, ¿qué porcentaje de víctimas de accidentes con embarcaciones no tenían puesto el salvavidas?","84%","22%","55%","Número para memorizar: 84%. Casi todas las víctimas no lo llevaban puesto."],
+[4,"G","Según estadísticas internacionales en accidentes con embarcaciones, ¿qué porcentaje de muertes son por ahogamiento?","77%","50%","38%","Número para memorizar: 77%. (Y 84% sin salvavidas, pregunta anterior: no los mezcles)."],
+[5,"G","¿Cuáles son los meses del año en que el agua de los lagos está más fría?","De mayo a octubre","De marzo a diciembre","Julio y agosto","Son seis meses: mayo a octubre. No solo pleno invierno (jul-ago), por eso el agua puede ser peligrosa también a principios de otoño y primavera."],
+[6,"G","¿En qué época del año las embarcaciones con mayor riesgo de tumbarse deben usar vestimenta especial para prevenir el enfriamiento por contacto con el agua?","De mayo a octubre","De marzo a diciembre","De julio y agosto","Mismo período que la pregunta anterior: mayo a octubre."],
+[7,"G","¿Es recomendable usar salvavidas cada vez que embarco?","Sí, porque el 80% de las muertes por ahogamiento se producen en personas que no usaban salvavidas.","No es necesario si el clima es favorable.","Solo durante el invierno, ya que los chalecos también cumplen la función de abrigo.","Siempre, no depende del clima ni de la estación. Dato: 80%."],
+[8,"G","¿Puedo modificar una embarcación para hacerla más cómoda?","No, no puedo hacerlo.","Puedo modificar solo la cubierta.","Puedo modificar solo el casco.","No se modifica nada: cualquier cambio altera lo que PNA aprobó para ese modelo (estabilidad, capacidad, potencia)."],
+[9,"G","¿Por qué es importante que el doble fondo de una embarcación esté firme y no tenga entradas de agua?","Las dos respuestas anteriores son correctas: le da estructura al casco y funciona como cámara de aire.","Porque le da estructura al casco.","Porque me garantiza que funcione como cámara de aire.","Es una pregunta de «ambas son correctas»: el doble fondo hace las dos cosas. Si tiene entradas de agua, deja de ser cámara de aire y pierde su rol."],
+[10,"G","¿Es peligroso accionar artefactos eléctricos al cargar combustible?","Sí, es peligroso, puede producir chispas.","No, si la embarcación es nueva.","No, no es peligroso.","Los vapores de nafta + una chispa = incendio. Nada eléctrico mientras cargás."],
+[11,"G","¿Qué clase de matafuegos conviene llevar a bordo?","El ABC.","El que tenga más de un kilo.","El de CO2.","El ABC sirve para sólidos, líquidos inflamables y fuego eléctrico, o sea los incendios que pueden pasar a bordo."],
+[12,"G","Si estoy navegando y me encuentro de frente con otra embarcación que navega hacia mí, ¿qué debo hacer?","Caer (virar) a estribor.","Detener la marcha.","Caer (virar) a babor.","Siempre a estribor (tu derecha), como en la calle. Cada uno se corre a su derecha y se cruzan por babor."],
+[13,"G","Si detecta un pedido de auxilio, ¿qué debe hacer?","Presto auxilio y doy aviso a la autoridad.","Solo doy aviso a la autoridad.","No intervengo y doy aviso a la autoridad.","Prestar ayuda es obligatorio y además se avisa a la autoridad. No ayudar puede ser sancionado (ver pregunta 68)."],
+[14,"G","¿Cuáles son las luces básicas de una embarcación navegando y cómo se distribuyen?","Luz blanca todo horizonte en popa, roja en proa sobre babor y verde en proa sobre estribor.","Luces rojas en estribor, verde en babor y blanca en popa.","Luz blanca que se ve de todos lados, roja y verde en popa.","Rojo = babor (izquierda), verde = estribor (derecha), blanca atrás. Trampa típica: invertir los colores."],
+[15,"G","Si dos embarcaciones a motor se cruzan con riesgo de colisión, ¿qué deben hacer?","La de babor debe ceder el paso.","La de estribor tiene que frenar su marcha.","La de estribor debe ceder el paso.","Según el manual, la de babor cede. Regla práctica: tiene prioridad la que viene por tu derecha, igual que en una esquina sin semáforo."],
+[16,"G","Si voy navegando y me encuentro con una embarcación fondeada, ¿qué debo hacer?","Esquivarla, disminuir la velocidad y no producir olas.","Seguir derecho si no estoy en rumbo de colisión.","Si no está pescando, no le provoco inconvenientes.","Los fondeados no maniobran. Los esquivás, bajás la velocidad y evitás generar oleaje."],
+[17,"G","¿Qué requisitos debe tener un salvavidas para estar en regla y cumplir su función?","Debe estar homologado por PNA y ser acorde al peso y tamaño del usuario.","Cualquier salvavidas es válido si está en buen estado.","Debe tener el sello de aprobación de Prefectura y ser tipo poncho color naranja.","Homologado + talle correcto. El poncho naranja no es una exigencia."],
+[18,"G","¿Por qué es importante saber el nombre específico de cada cosa en la actividad náutica?","Por seguridad: conocer el nombre específico me permite identificarla con rapidez ante cualquier situación.","El idioma náutico es solo para barcos de gran porte y cargueros.","Porque en náutica hay un idioma especial que es tradición utilizar.","La razón es de seguridad, no de tradición: en una emergencia nadie puede perder tiempo en «la cosa esa»."],
+[19,"G","¿Qué se recomienda hacer con las baterías al desembarcar?","Se las desconecta.","Se las deja conectadas.","Se les carga agua destilada.","Desconectarlas evita descargas y cortocircuitos mientras la embarcación está parada."],
+[20,"G","¿Conviene ventilar el motor interno después de la marcha?","Sí, para evitar la acumulación de gases.","Solo es conveniente si navego más de 2 horas.","No es necesario.","Siempre. Los gases de nafta se acumulan en el compartimento del motor."],
+[21,"G","¿Por qué es importante conocer el pronóstico meteorológico?","Para prevenir una situación climática desfavorable para la navegación.","Para saber de qué punto cardinal serán los vientos predominantes.","Para ver si va a llover y calcular qué equipamiento debo llevar.","El objetivo es evitar salir con condiciones peligrosas, no solo saber si llueve."],
+[22,"G","¿Qué tipo de prendas hay que asegurarse de llevar en navegación?","Prendas protectoras adecuadas, incluido el dispositivo personal de flotación aprobado por PNA o Autoridad Marítima.","Camperas y rompevientos para el frío, y en verano ropa clara.","Solo la ropa de baño, una toalla y salvavidas.","La respuesta correcta es la que menciona el dispositivo de flotación aprobado."],
+[23,"G","¿Es recomendable usar otros elementos de seguridad además del salvavidas?","Sí: guantes, protección para los pies, traje seco o semiseco que protege contra la radiación solar y la hipotermia.","No, con lo exigido por la ley es suficiente.","No, si la embarcación es segura y el clima es favorable no hace falta nada más.","Lo que exige la ley es el mínimo. Un traje seco o semiseco te protege del sol y de la hipotermia."],
+[24,"G","¿Es fácil ponerse el salvavidas una vez que estoy en el agua?","No, es extremadamente dificultoso.","Sí, si no es tipo poncho.","Sí, si es tipo poncho es relativamente fácil.","Por eso se pone antes de embarcar. Dentro del agua es dificilísimo, sea del tipo que sea."],
+[25,"G","Si la embarcación se tumba, ¿conviene nadar hasta la costa?","No, debe quedarse tomado de la embarcación el mayor tiempo posible.","Sí, si la costa está cerca.","Sí, si las olas no son altas.","La embarcación flota y se ve desde lejos. Las distancias en el agua se subestiman y nadar te hace perder calor más rápido."],
+[26,"G","¿Por qué no se debe fumar al cargar combustible?","Porque las chispas y el calor de las brasas pueden provocar un incendio.","No hay problema si no acerco el cigarrillo al tanque.","No existe riesgo porque no hay chispa.","Los vapores se esparcen, no hace falta acercarlo al tanque."],
+[27,"G","Por razones de seguridad, ¿al cargar combustible debo tener listo para usar el matafuego?","Sí, debe estar listo para usar.","Con que esté en el barco es suficiente.","No, si no estoy fumando.","No alcanza con que esté a bordo: tiene que estar a mano y listo."],
+[28,"G","Nombre genéricamente por lo menos 2 lugares donde no se puede producir marejada ni navegar a alta velocidad.","Puertos, antepuertos, proximidades de muelles, fondeaderos, zonas de remos, costas vulnerables.","En medio del lago, en el puerto y en la zona del paredón del lago.","En zonas de desembocaduras de ríos y detrás de las boyas cardinales.","Lugares con embarcaciones fondeadas, gente o costa frágil: puertos, muelles, fondeaderos, zonas de remo."],
+[29,"G","¿Qué combustible utilizan los motores de cuatro tiempos?","Solo nafta.","Aceite, agua y nafta.","Mezcla de aceite y nafta.","Cuatro tiempos = solo nafta (el aceite va aparte, en el cárter). La mezcla nafta + aceite es de dos tiempos."],
+[30,"G","Enumere las 3 situaciones de riesgo de abordaje entre embarcaciones a motor de la misma categoría.","Vuelta encontrada, cruce y alcance.","Vuelta mordida, salida del muelle y llegada al muelle.","Abordaje, aproximación y llegada a una boya.","Las tres: vuelta encontrada (de frente), cruce y alcance (uno viene alcanzando al otro por atrás)."],
+[31,"G","Si dos embarcaciones a motor navegan de vuelta encontrada (de frente), ¿cada una debe caer o virar a...?","Estribor.","Babor.","Por popa.","Ambas a estribor."],
+[32,"G","¿Hay alguna regla de paso que otorgue el derecho de embestir a otra embarcación?","No: apenas quien debe mantener rumbo y velocidad advierte que el otro no lo vio o no se aparta a tiempo, debe contribuir con su maniobra.","Sí, si la que tiene derecho de paso no es respetada debe mantener su rumbo y, si hay choque, el culpable es quien no respetó la prioridad.","Sí, en caso de que la embarcación con prioridad esté remolcando otra en emergencia.","Nunca existe derecho a chocar. Aunque tengas prioridad, si el otro no maniobra, tenés que hacer algo para evitar la colisión."],
+[33,"G","¿Qué clase de basura puede arrojarse en aguas fluviales, lacustres y del interior de puertos?","Ninguna.","Solo la biodegradable.","Solo materia orgánica.","Ninguna, ni orgánica ni biodegradable."],
+[34,"G","¿Quién es el responsable de la seguridad en la embarcación, como también la de los pasajeros?","El conductor.","El dueño, aunque no esté navegando.","El titular de la matrícula.","Responde el que va al mando en ese momento."],
+[35,"G","Si tengo matrícula de Prefectura Naval, Rey o de otra jurisdicción, ¿puedo navegar libremente en lagos de Córdoba?","No, se debe solicitar permiso en la Dirección de Seguridad Náutica.","Sí, con la matrícula Rey puedo navegar en todo el país.","No, esa matrícula es solo para Buenos Aires y los lagos del sur.","Una matrícula de otra jurisdicción no te habilita sola: pedís permiso de navegación en la DSN."],
+[36,"G","¿Por qué es importante saber el límite de rango de viento de la embarcación en la que navego?","Porque me indica hasta cuánta intensidad de viento y altura de ola puedo navegar.","Para que me admitan en un club náutico.","Porque determina en qué lagos o lagunas puedo navegar.","Es el límite de seguridad de ese modelo, definido por viento y altura de ola."],
+[37,"G","¿Cada cuánto debo realizar la inspección técnica de una embarcación?","Cada 2 años, o en la matriculación, transferencia o cambio de motor.","Todos los años.","Solo en la matriculación y en la transferencia.","Cada 2 años y además en esos tres momentos: matriculación, transferencia y cambio de motor."],
+[38,"G","¿Puede sufrir hipotermia una persona que cae al agua en los lagos de la provincia de Córdoba?","Sí, según las condiciones climáticas.","Sí, solo en invierno.","No, la hipotermia solo puede darse en los lagos del sur.","Puede pasar en Córdoba también. Depende de temperatura del agua y del clima, no solo de la estación."],
+[39,"G","¿Qué es la hipotermia?","Se produce cuando el cuerpo humano pierde más calor del que puede generar.","Es la pérdida de calor del cuerpo que se produce en invierno cuando uno se cae al agua.","Es el enfriamiento que se produce al caer en agua casi congelada.","Definición general: perder más calor del que el cuerpo produce. No requiere invierno ni agua congelada."],
+[40,"G","¿Para qué sirven los espacios estancos en una embarcación?","Sirven como reserva de flotación.","Sirven para guardar elementos de seguridad.","Sirven como asientos y para guardar todo tipo de elementos.","Estanco = cerrado herméticamente. Su función es mantener la embarcación a flote si se inunda. No son para guardar cosas ni asientos (tu error previo)."],
+[41,"G","¿Cuáles son los riesgos de caer al agua?","Hipotermia, ahogarse, ser embestido por otra embarcación, golpearse al caer.","Si tengo salvavidas, ahogarse no; golpearse al caer y ser embestido por otra embarcación.","Ser embestido por otra embarcación y ahogarse.","Son los cuatro riesgos. Ni con salvavidas se descarta del todo el ahogamiento."],
+[42,"G","¿Es necesaria alguna autorización para usar los espejos de agua de Córdoba para navegación deportiva a motor?","Sí, debo registrar la embarcación en la DSN mediante matriculación, o permiso de navegación si es de otra jurisdicción.","No, puedo navegar libremente.","No, si tengo matrícula de otra jurisdicción o PNA puedo hacerlo directamente con solo portar la documentación.","Matrícula DSN o permiso de navegación si viene de otra jurisdicción."],
+[43,"G","¿Es obligatorio informar sobre la transferencia de una embarcación matriculada en la DSN?","Sí, es obligatorio en todos los casos.","Si la embarcación fue vendida para llevarla a otra provincia no hace falta.","No, con un boleto de compraventa certificado por escribano público es suficiente.","Siempre, sin excepciones."],
+[44,"G","¿Puedo remolcar un dispositivo de arrastre con cualquier tipo de embarcación?","No, solo con las que tienen capacidad para 2 o más tripulantes.","Sí, mientras la potencia del motor sea suficiente.","Sí, mientras lo haga en una zona habilitada y con un acompañante que observe hacia atrás.","La condición es la capacidad de la embarcación: mínimo 2 tripulantes (uno conduce y otro observa). Tener potencia no alcanza."],
+[45,"G","¿En qué zona del lago puedo navegar a alta velocidad y producir oleaje?","Solo a más de 100 m de la costa, lejos de embarcaciones fondeadas y fondeaderos de clubes.","En cualquier parte del lago si estoy practicando ski o arrastrando un gomón o similar.","En cualquier parte del lago si no hay nadie cerca que pudiera generar peligro de colisión.","100 m de la costa es el número. Esquiar no te da permiso para ir rápido en cualquier lado."],
+[46,"G","¿Es necesaria una inspección técnica para matricular o transferir una embarcación en Córdoba?","Sí, es necesaria.","No, no es necesaria.","No, si ya tiene matrícula no hace falta.","Se exige en ambos trámites."],
+[47,"G","¿Es obligatorio tener al día la tasa anual para poder navegar?","Sí, es obligatorio y además se debe portar a bordo el comprobante.","No, si ya la pagué no hace falta llevarla a bordo.","No, con tener el seguro al día es suficiente.","Hay que tenerla paga y llevar el comprobante a bordo."],
+[48,"G","¿Es obligatorio contar con licencia de conducir náutica para conducir una embarcación a motor en aguas de Córdoba?","Sí, cuando navego en una embarcación con motor mayor a 10 hp.","No, si soy el dueño no hace falta que tenga licencia, con la matrícula es suficiente.","No, si está el titular de la matrícula a bordo no es obligatorio tener licencia.","La licencia la necesita quien conduce, sin importar quién sea el dueño. Umbral: 10 hp."],
+[49,"G","¿Tienen las embarcaciones capacidad de carga máxima y potencia máxima definidas?","Sí, las define Prefectura Naval Argentina en base a parámetros de aprobación del prototipo de cada embarcación.","Sí, depende del motor y de la cantidad de asientos instalados por el fabricante o astillero.","Sí, lo define el astillero fabricante según su criterio.","Las define PNA al aprobar el prototipo, no el fabricante ni dependen de los asientos."],
+[50,"G","¿Para qué sirve llenar la planilla de embarque o rol de despacho?","Ahí quedan los datos del barco, la tripulación, el recorrido y la hora estimada de regreso, para tener información certera en caso de emergencia.","Para cumplir con la normativa del club y que sepan cuántas embarcaciones se botan por día.","Sirve para evitar una multa y cumplir con las formalidades del club o guardería.","Es una herramienta de seguridad: si no volvés, saben a quién buscar y dónde."],
+[51,"G","¿Qué es un rol de despacho o libro de embarque?","Un formulario o planilla que debo llenar en el club de donde salgo a navegar.","Una planilla que me exige la Dirección de Seguridad Náutica.","Un libro que debo llevar en la embarcación cuando salgo a navegar.","Se llena en el club (no se lleva a bordo, ni lo exige la DSN)."],
+[52,"G","¿En qué estado debe estar su embarcación junto con todo su equipamiento para evitar inconvenientes?","En perfectas condiciones de uso y mantenimiento.","Algunos elementos de seguridad pueden estar vencidos, pero si funcionan no hay inconvenientes.","Si está guardada bajo techo seguro que está en perfectas condiciones.","Todo en condiciones. Nada vencido, y guardarla bajo techo no garantiza nada."],
+[53,"G","¿Es importante verificar el casco, los sistemas y equipos de la embarcación antes de zarpar?","Sí, para asegurarme de que todo funcione correctamente.","No, si usé la embarcación recientemente no es necesario.","No hace falta si hace poco salió del taller.","Siempre se revisa antes de zarpar."],
+[54,"G","Si no salgo de ningún club, ¿cómo lleno un libro de embarque o qué precaución debo tomar?","Al menos debo informar a alguien responsable sobre el posible recorrido y la hora estimada de arribo.","No es necesario porque los lagos de Córdoba son relativamente pequeños.","Lo debo llenar y llevar a bordo para mostrar a las autoridades si me lo piden.","Si no hay club, avisás vos a una persona responsable: recorrido y hora estimada de regreso."],
+[55,"G","¿Qué documentación debo llevar a bordo de una embarcación a motor para poder utilizarla?","Certificado de matrícula a nombre del titular actual o permiso de conducción, licencia de conducir y el último pago de la tasa anual.","La matrícula, el carnet de conductor náutico o el carnet del club al que pertenece el titular.","La factura de compra o boleto, el inicio del trámite ante la DSN y la inspección técnica aprobada.","Tres cosas: matrícula (o permiso), licencia de conducir y comprobante de la tasa anual. El carnet del club no sirve."],
+[56,"G","¿Por qué debo controlar cuánto combustible tengo antes de salir a navegar?","Para evitar quedarme a la deriva; siempre llevar un margen extra por posibles cambios de planes o cambios meteorológicos.","No hace falta si el recorrido va a ser muy corto.","No es necesario si el clima es favorable, con tener lo mínimo es suficiente.","Siempre con margen extra. El clima o el plan pueden cambiar."],
+[57,"G","¿En todos los lagos de la provincia de Córdoba se puede navegar a motor?","No, hay lagos en los que está prohibido navegar a motor.","Sí, en cualquier lago siempre que cuente con un guía de pesca autorizado.","Sí, se puede siempre que el motor sea tipo ecológico.","Hay lagos donde el motor está prohibido, y no hay excepciones por guía ni por motor «ecológico»."],
+[58,"G","¿Qué bandera del código internacional significa «tengo buzo sumergido»?","La bandera «A» (Alfa) del código internacional de señales.","Una bandera con el dibujo de un buceador.","La bandera argentina.","Es la bandera Alfa: mitad blanca, mitad azul con corte en V (la de la imagen). Además hay que pasar a más de 100 m de la boya de buceo."],
+[65,"G","¿Es obligatorio informar y solicitar autorización para realizar un evento deportivo en los lagos de Córdoba?","Sí, todos los eventos deportivos deben solicitar permiso con 10 días de anticipación como mínimo para ser autorizados por la DSN.","No, si no son eventos de nivel provincial o nacional no requieren autorización previa.","No, si el evento es de menos de 20 embarcaciones no es necesario permiso.","Todos, sin importar tamaño o nivel, con mínimo 10 días de anticipación."],
+[66,"G","¿Está permitido arrastrar deslizadores (ski, gomones, etc.)?","Sí, está permitido en zonas habilitadas para tal fin.","No, está prohibido en todos los lagos.","Sí, está permitido en cualquier lago o zona.","Solo en zonas habilitadas."],
+[67,"G","¿Está permitido pasar a velocidad de planeo (alta velocidad) cerca de embarcaciones ancladas o fondeaderos?","No: si paso cerca debe ser a baja velocidad y sin hacer olas.","No, si hay viento fuerte que produce olas.","Sí, si estoy arrastrando un esquiador o gomón.","Cerca de fondeadas, siempre despacio y sin olas, haya viento o no."],
+[68,"G","¿Puede ser sancionado quien no acceda a colaborar al solicitársele ayuda?","Sí, debe prestar ayuda inmediatamente.","No, no es su obligación.","No, no debe interferir para no involucrarse legalmente.","Ayudar es obligatorio y negarse es sancionable."],
+[69,"G","¿Puede ser sancionado quien pase a menos de 100 m de la boya que señala «hombre buceando»?","Sí, a las boyas de buceo hay que pasarles a más de 100 m como mínimo.","No, si pasa a baja velocidad no puede ser sancionado.","No, solo debo alejarme 20 m y estar atento.","Mínimo 100 m, sin importar la velocidad."],
+[70,"G","¿Puede ser sancionado quien esté buceando sin embarcación de apoyo con guardia de fondeo y sin bandera de señalización?","Sí, para practicar buceo debe cumplir con esos requisitos.","Solo si no puso la bandera correspondiente.","No, si tiene la habilitación correspondiente.","Se exigen los dos requisitos: embarcación de apoyo con guardia y bandera. Tener habilitación no los reemplaza."],
+[71,"G","¿Puede ser sancionado quien navegue habiendo sido su embarcación precintada?","Sí, debe regularizar su situación antes de volver a navegar.","No, si es el titular de la embarcación no corresponde otra sanción.","No, puede navegar mientras inicie el trámite con un provisorio.","Precintada = no se navega hasta regularizar."],
+[72,"G","¿Se pueden arrojar residuos a las aguas?","No, deben arrojarse en cestos de basura.","Solo si son materiales orgánicos.","Sí, si son biodegradables.","Nada al agua. Todo a cestos de basura."],
+[73,"G","¿La licencia de conducir es obligatoria para todos los que conducen una embarcación a motor de 10 hp o más?","Sí, es obligatorio.","No, si el titular está en la embarcación y cuenta con licencia puedo conducir.","No, si soy menor de 18 años.","Obligatoria para quien conduce, 10 hp o más, sin excepciones por edad ni por titular."],
+[74,"G","¿Es obligatorio llevar la cantidad de salvavidas que corresponda a la cantidad de personas embarcadas?","Sí, debe haber un salvavidas para cada persona embarcada.","No, si falta uno puede usarse el salvavidas redondo como auxiliar.","El conductor puede no tener salvavidas si es mayor de 18 años y sabe nadar competentemente.","Uno por persona, incluido el conductor."],
+[75,"G","¿Está permitido navegar una embarcación bajo la influencia de drogas o alcohol?","No, bajo ninguna circunstancia.","Sí, solo en verano y si el timonel no está alcoholizado.","Sí, si la cantidad de alcohol en sangre es menor a 0,5.","Tolerancia cero. No hay un nivel «permitido»."],
+[76,"G","¿Qué es un dispositivo de arrastre?","Todo lo que puedo arrastrar sobre la superficie del agua utilizando la potencia del motor.","Es un esquiador.","Es un juguete de goma que lleva una embarcación en popa.","Es cualquier cosa que se arrastre con el motor: ski, gomón, etc."],
+[77,"G","¿Qué es el calado?","La profundidad a la que llega el punto más bajo de cualquier parte sumergida de la embarcación.","La altura desde la línea de flotación a la cubierta de la embarcación.","La profundidad del lago.","Calado = cuánto «se hunde» la embarcación (parte más baja bajo el agua). La altura sobre el agua es el francobordo."],
+[78,"G","¿Puedo pasar cerca de otras embarcaciones fondeadas en zonas de fondeaderos o clubes náuticos?","No, debo mantener la distancia de seguridad respecto de otros vehículos, espectadores y la costa, respetando sus derechos.","Sí, mientras no genere olas que pudieran molestar a los demás.","Sí, cuando están a menos de 100 m de la costa.","Distancia de seguridad y respeto por los demás."],
+[79,"G","¿Por qué debo levantar los pisos y la tapa del motor interno antes de arrancar?","Para verificar que no haya combustible derramado o agua, y ventilar los gases.","Para limpiar el interior.","No es necesario si la embarcación es nueva.","Chequeás combustible, agua y ventilás los gases antes de que una chispa arranque algo peligroso."],
+[80,"G","¿Hay alguna maniobra específica para rescatar a una persona que se cayó al agua?","Sí, existe una específica para cada tipo de embarcación.","No, debo rescatarla de cualquier forma sin importar la maniobra.","No, debo llamar a la autoridad competente.","Cada tipo de embarcación tiene su maniobra."],
+[81,"G","Si una persona se cae al agua, ¿cómo la debo rescatar?","Debo hacer la maniobra específica según la embarcación.","Debo subirla siempre por proa.","Debo dejar que lo haga personal autorizado.","Maniobra específica de tu embarcación. No siempre por proa y no se espera a terceros."],
+[82,"G","¿A qué se llama inspección ocular de tuberías, cables y comandos?","A observar estos elementos para ver si todo está en orden.","A una inspección hecha por un técnico especializado.","A revisar todo mediante una lupa o lente de aumento.","«Ocular» = con los ojos. La hacés vos mismo, mirando que todo esté en orden. No hace falta técnico ni lupa (tu error previo)."],
+[83,"L","¿Cuál es la función de la cadena en la tea (conjunto de cadena y cabo de fondeo)?","Hacer que el ancla se acueste en el fondo y trabaje horizontalmente.","Para que no se enrede el cabo cuando el ancla es muy liviana.","Para que la tea sea más pesada y se pueda detener el barco.","El ancla agarra bien cuando el tirón es horizontal. La cadena pesada ayuda a lograr eso."],
+[84,"L","¿Qué mena (diámetro de un cabo) se recomienda para usar con el ancla?","10 mm","6 mm","4 mm","Número a recordar: 10 mm."],
+[85,"L","¿Cuáles son los elementos de seguridad que debo tener a bordo de una lancha propulsada a motor?","Un salvavidas con silbato por persona, un matafuego, ancla con cadena y cabo, balde de achique, remo bichero.","Un salvavidas, un silbato, ancla, bomba de achique.","Matafuego, remo, ancla con cabo, bengala, salvavidas redondo, traje de agua, espejo de señales y radio VHF.","Fijate en los detalles: salvavidas CON silbato por persona, ancla con cadena y cabo, balde de achique (no bomba) y remo bichero."],
+[86,"L","¿Cuánta tea (ancla, cadena y cabo) necesito para fondear una embarcación?","Una vez y media la profundidad del sitio como mínimo.","Igual a la profundidad del sitio elegido.","Si el ancla es pesada, 20 metros es suficiente.","Mínimo 1,5 veces la profundidad. Con la misma profundidad el ancla no puede trabajar horizontal."],
+[87,"L","Si aumenta el viento y por ende la altura de la ola, ¿necesitaría más cabo para que el ancla se mantenga clavada?","Sí, cuanto más alta la ola más cabo necesita el ancla para trabar horizontalmente y no despegarse del fondo.","No, si el ancla tiene cadena y cabo no importa la altura de la ola.","No, al contrario: cuanto más alta la ola, menos cabo para que no oscile la embarcación.","Más ola = más cabo, así la tirada sigue siendo horizontal."],
+[88,"L","Si se desata una tormenta con viento fuerte y estoy anclado, ¿qué me conviene hacer?","Quedarme quieto, acomodando el bote para que no entre agua, esperar que pase y luego navegar a un lugar seguro.","Levantar el ancla lo antes posible y navegar en contra del viento.","Levantar inmediatamente el ancla y navegar a favor del viento hacia una bahía protegida.","Anclado y quieto es más seguro que lanzarte a navegar con tormenta."],
+[89,"L","Si no puedo destrabar el ancla, ¿qué me conviene hacer?","Tirar de la tea hasta dejarla tirante y mover el peso a popa para que la ola la destrabe.","Cortar el cabo dejando caer el ancla.","Poner una boya en el cabo del ancla para recuperarla luego.","Primero se intenta soltarla con tensión y el movimiento de la ola, antes de pensar en cortar."],
+[90,"L","¿Para qué sirve el venteo que tiene la tapa del tanque del motor?","Para que le entre aire al tanque y el combustible llene las mangueras que van al motor sin que se haga vacío.","Para poder abrir la tapa del tanque, porque si junta presión no abre.","Para que se evaporen los gases del motor.","Sin venteo se hace vacío en el tanque y el combustible no llega al motor."],
+[91,"L","¿Cómo debe estar el venteo de la tapa del tanque cuando estoy navegando?","Abierto.","Con la tapa del tanque destapada.","Cerrado.","Abierto para que entre aire. No destapes el tanque."],
+[92,"L","¿Cómo controlo periódicamente si el motor refrigera?","Verificando si el testigo de agua de la bomba funciona.","No hace falta porque al ir sumergido se refrigera con el agua.","Tocando el motor o la tapa del mismo para controlar la temperatura.","El testigo de agua (el chorrito) te muestra que la bomba de refrigeración funciona."],
+[93,"L","Antes de arrancar, ¿en qué posición debe estar el comando?","En punto muerto.","En marcha atrás.","En marcha avante.","Siempre en punto muerto para que no salga disparada la embarcación."],
+[94,"L","¿Dónde está el ángulo muerto de visión del timonel?","En proa, entre la proa y el agua.","En popa hacia estribor.","En popa hacia babor.","Con la proa levantada no ves lo que tenés delante, justo adelante de la proa."],
+[95,"L","¿Qué cantidad de anclas se recomienda tener a bordo de una embarcación?","Mínimo dos.","Ninguna si la salida es por el día.","Con una es suficiente.","Mínimo dos, por si una se pierde o se traba."],
+[96,"L","¿Cómo se deja el paso de nafta después de detenerse?","Cerrado, para que el motor no se ahogue.","Abierto si queda poco combustible en el tanque.","Abierto si levanto la pata del motor.","Cerrado al terminar. Si queda abierto, el carburador se inunda."],
+[97,"L","¿Qué tipo de ancla es mejor para fondos barrosos?","El ancla tipo Danforth.","El tipo grampín o rezón plegable.","Cualquiera mientras sea pesada.","Danforth para barro (y arena). El tipo de ancla importa, no solo el peso."],
+[98,"L","¿Cómo debe estar el tapón del doble fondo mientras navego?","Puesto y ajustado.","Destapado para verificar si hay filtraciones.","Destapado para ventilación.","Siempre puesto y ajustado: sin tapón entra agua y pierde flotación."],
+[99,"L","¿Cuál es la función más importante del doble fondo de una embarcación?","Es la reserva de flotación de la embarcación.","Darle mayor refuerzo a la estructura del casco.","Que el piso sea plano en el interior.","La más importante es la flotación, no la estructura ni el piso plano."],
+[100,"L","Si alguien va a desenredar algo atorado en la hélice del motor, ¿cómo debe estar el motor?","Apagado.","Prendido en marcha atrás.","Prendido en punto muerto.","Apagado, y mejor aún con el corta corriente sacado, para que nadie pueda arrancarlo."],
+[101,"L","¿Por qué conviene tener ordenada una embarcación antes de navegar?","Para evitar enredos y accidentes.","Porque puedo ser sancionado.","Para estar más cómodo y que haya más espacio.","El orden es seguridad: cabos y objetos sueltos causan accidentes."],
+[102,"L","¿Por qué es obligatorio llevar un balde de buen tamaño y atado en el barco?","Para sacar agua si hace falta (los dispositivos eléctricos pueden fallar), y atado para que no se escape al usarlo.","No es importante si tengo una bomba de achique eléctrica.","Es importante para tener una reserva de agua extra.","Backup manual de la bomba eléctrica, y atado para no perderlo."],
+[103,"M","¿Por qué la mayoría de las motos de agua y jet skis son inestables cuando embarcamos o nos detenemos?","Porque necesitan velocidad para lograr estabilidad y no estar sobrecargadas.","Porque nos subimos por el lado incorrecto y hay desplazamiento de líquidos internos.","Porque nos detenemos demasiado rápido y la embarcación no alcanza a estabilizarse.","Se estabilizan en movimiento. Detenidas o al subir, son inestables."],
+[104,"M","¿Qué mecanismo emplea un chorro de agua para impulsar y gobernar artefactos acuáticos?","La turbina.","Los motores de 2 tiempos.","La refrigeración de los motores fuera de borda.","Una turbina absorbe agua y la expulsa a presión. Orientando el chorro se dirige la moto (tu error previo: la refrigeración no impulsa nada)."],
+[105,"M","Indique qué embarcación tiene prioridad de paso entre un velero y una moto de agua.","El velero, por tener menor capacidad de maniobra.","La moto de agua, por ser más pequeña.","El velero, por tener mayor capacidad de maniobras.","Prioridad al que maniobra peor. El velero depende del viento, la moto es muy ágil. (Dos opciones dicen «velero», pero solo una da el motivo correcto)."],
+[106,"M","¿Todas las motos de agua pueden usarse para remolcar un esquiador?","No, deben tener capacidad para 2 o más tripulantes.","Sí, porque tienen potencia suficiente.","No, porque deben ser de más de 2,5 m de eslora.","Igual que en lanchas: se necesita capacidad para 2+ (conductor + observador)."],
+[107,"M","¿Cómo esquivo un obstáculo mientras navego en una moto de agua o jet ski?","Desacelero sin perder potencia y viro.","Desacelero completamente y viro el manillar.","Salto y lo paso por arriba.","La moto se gobierna con el chorro de agua. Si soltás todo el acelerador, perdés el empuje y la dirección. Bajás un poco, pero mantenés potencia (tu error previo)."],
+[108,"M","¿Las motos de agua tienen reserva de flotación?","Sí, todas las embarcaciones la tienen.","Sí, solo de telgopor.","No, solo las lanchas la tienen.","Toda embarcación debe tener reserva de flotación."],
+[109,"M","¿El asiento de la moto sirve como salvavidas?","No, no conviene desarmar la moto.","Sí, las más nuevas sí.","Sí, en caso de emergencia.","No: el asiento no es un dispositivo de flotación personal. El salvavidas lo llevás puesto."],
+[110,"M","¿Qué hay que colocarse en la muñeca antes de arrancar una moto de agua, un jet ski o una lancha/bote con motor fuera de borda?","El corta corriente o corte de hombre al agua.","El matafuego.","El salvavidas.","Es el cordón que apaga el motor si te caés."],
+[111,"M","¿Qué actitud debe tener quien conduce una moto de agua o jet ski?","El sentido común y el respeto por los demás.","Debo ser buen navegante y saber siempre los derechos de paso.","Debo ser buen deportista y demostrar agilidad.","La respuesta del manual: sentido común y respeto."],
+[112,"M","¿Qué precauciones debo tener al remolcar un dispositivo de arrastre?","Debe haber 2 personas en la embarcación, navegar a más de 100 m de la costa, en una zona habilitada y lejos de otras embarcaciones.","Puedo navegar en todo el lago si el que conduce tiene licencia y estar atento al clima, sin limitaciones.","Si tengo una moto de agua con capacidad para 2 o más lo puedo hacer en todo el lago.","Reúne cuatro condiciones: 2 personas, más de 100 m de la costa, zona habilitada y lejos de otras embarcaciones."],
+[113,"Z","¿Existen zonas de privilegio para fondeos o para prácticas deportivas?","Sí, existen y debo conocerlas; algunas están demarcadas con carteles o boyas en los lagos.","Solo están marcados los clubes deportivos y fondeaderos.","No, todas las zonas del lago son públicas y libres para la navegación en Córdoba.","Hay zonificación y es responsabilidad del conductor conocerla."],
+[114,"Z","¿Está permitido botar una embarcación a motor o acercarse a la costa con ella en una zona tipo IV (amarilla) según la resolución de Zonificación N° 03/2013?","No, en esa zona solo se pueden botar o acercar embarcaciones sin motor.","Sí, mientras al transitar la zona lo haga a velocidad reducida al mínimo.","Sí, mientras no haya un boyado demarcatorio de la zona.","Zona IV amarilla: sin motor."],
+[115,"Z","En los primeros 100 m de ancho a partir de la línea de costa, ¿se puede circular a velocidad de planeo sin problemas?","No, esos 100 m son la banda de seguridad donde solo está permitido navegar a velocidad de desplazamiento, reducida al mínimo.","Sí, mientras no exista un boyado demarcatorio.","Sí, siempre que no lleve esquiadores o artefactos de arrastre.","Banda de seguridad de 100 m: velocidad mínima."],
+[116,"Z","¿Qué significa una zona tipo II (azul) en la zonificación de los lagos de Córdoba?","Es una zona habilitada para embarcaciones a motor y prohibida para la práctica de kitesurf.","Es una zona prohibida para embarcaciones a motor.","Es una zona habilitada como balneario.","Zona II azul: motor sí, kitesurf no."],
+[117,"Z","¿Qué tipo de embarcaciones no pueden botarse ni acercarse a la costa en una zona tipo IV (amarilla) según la resolución de Seguridad Náutica?","Embarcaciones a motor y kitesurf.","Botes a remo y tablas de windsurf.","Veleros, kayaks o canoas.","Zona IV amarilla: lo que no puede entrar es motor y kitesurf. Remo, windsurf, veleros y canoas sí."],
+[118,"Z","¿Qué es una zona tipo III (celeste) en los lagos de Córdoba?","Una zona exclusiva para la práctica de kitesurf y windsurf.","Una zona apta para botar y acercarse con embarcaciones a motor.","Una zona habilitada como balneario.","Celeste = kitesurf y windsurf, exclusivo."],
+[119,"P","Si debo navegar hacia barlovento (contra el viento) con ola significativa, ¿qué me conviene hacer?","Transferir peso a proa, enfrentar la ola por la amura y navegar a velocidad moderada.","Transferir el peso a popa, enfrentar la ola por proa y navegar a alta velocidad.","Transferir el peso a una banda, cerrar lo más que se pueda la embarcación y tomar la ola de costado.","Barlovento = de donde viene el viento. Peso adelante, ola en diagonal (por la amura) y velocidad moderada."],
+[120,"P","¿Qué debo hacer antes de salir a navegar con respecto al clima?","Informarme del estado climático antes de iniciar la navegación y mantener actualizado el parte meteorológico con escuchas periódicas.","Si ya vi el pronóstico el día anterior es suficiente.","El informe del clima no es importante si mi embarcación es segura y tengo todos los elementos de seguridad.","Mirar el pronóstico antes y seguir actualizándolo mientras navegás."],
+[121,"P","¿Cómo se amarra un cabo a una cornamusa?","Con vueltas y ochos (vuelta redonda, ocho y vuelta redonda o vuelta mordida).","Con un nudo marinero y uno simple.","Con un nudo cualquiera pero firme.","Una vuelta redonda, ochos y se termina con vuelta redonda o vuelta mordida."],
+[122,"P","Nombre 2 nudos marineros que debe saber hacer todo conductor náutico.","Ballestrinque y as de guía.","Nudo común y vuelta mordida.","Nudo común y ocho.","Los dos del manual: ballestrinque y as de guía (el lazo que no se corre)."],
+[123,"P","¿Cómo deben guardarse los cabos para que no se engalleten (no se enreden)?","Adujados (enrollados) y sin nudos.","Atados al manillar de esquiar.","Adentro del estanco de proa.","Adujar = enrollar prolijo. Sin nudos."],
+[124,"P","¿Cuál es la forma más fácil de remolcar una embarcación?","Abarloado: una embarcación al lado de la otra.","A tiro: una embarcación detrás de otra.","Una a motor y una a remo.","Abarloado: quedan unidas como un solo cuerpo y se controla mejor. A tiro (una atrás de la otra) es más difícil porque la remolcada oscila (tu error previo)."],
+[125,"P","¿Cuántas formas de remolcar una embarcación existen?","Tres formas: a tiro, abarloado y por empuje.","Tres formas: a motor, a remo y a vela.","Solo una, a tiro (una embarcación detrás de otra).","Las tres: a tiro, abarloado y por empuje."],
+[126,"P","¿Qué característica tienen los nudos marineros que los diferencia de los nudos comunes?","Se pueden hacer y deshacer con la misma facilidad y nunca se traban como un nudo ciego, aunque estén mojados y con mucha fuerza.","Se hacen sobre una soga especial que se utiliza solo en náutica y es muy resistente.","Se llama así a todos los nudos que se hacen en cabos en los barcos, porque en náutica hay un idioma particular.","Lo que los define es que se deshacen fácil aunque estén tensos y mojados."],
+[127,"P","¿Cómo conviene atracar: contra el viento o a favor del mismo?","Contra el viento.","No tiene importancia si la embarcación es pequeña.","A favor del viento.","Contra el viento: el propio viento te frena y tenés más control."],
+[128,"P","¿Qué debe hacer si descubre que está obstruida la toma de agua de refrigeración del motor?","Apagar el motor inmediatamente y solucionar el problema antes de arrancar nuevamente.","Dejarlo en marcha sin acelerar hasta que vuelva a tomar agua.","Navegar velozmente hasta la costa.","Sin refrigeración el motor se recalienta y se daña. Apagar ya."],
+[129,"P","¿Qué se hace primero: largar amarras o arrancar el motor?","Encender el motor y luego soltar las amarras.","Largar amarras y luego encender el motor.","Se hacen las dos cosas al mismo tiempo.","Primero motor: si no arranca, seguís amarrado y no quedás a la deriva."],
+[130,"P","Para la prevención del clima, ¿qué pronóstico es confiable controlar antes de salir a navegar?","El Servicio Meteorológico Nacional y la información del clima de la página de Seguridad Náutica.","El pronóstico del teléfono y el que pasan en la radio.","Alguna página de internet que pronostica toda la semana.","Fuentes oficiales: SMN y la página de Seguridad Náutica."]
+];
+const byId={}; Q.forEach(q=>byId[q[0]]=q);
+const nOk=q=>1+(q[7]?q[7].length:0);
+const optsOf=q=>[q[3]].concat(q[7]||[],[q[4],q[5]]);
+const okText=q=>[q[3]].concat(q[7]||[]).join("  o  ");
+const label=id=>"Pregunta "+id+" del manual";
+
+/* ---------- ESTADO (un perfil por persona) ---------- */
+let db={active:"Yo",profiles:{"Yo":{wrong:{},a:0,c:0}}};
+function load(){
+  try{const s=localStorage.getItem("nautica_v2"); if(s){const o=JSON.parse(s); if(o&&o.profiles&&Object.keys(o.profiles).length) db=o;}}catch(e){}
+  if(!db.profiles[db.active]) db.active=Object.keys(db.profiles)[0];
+}
+function save(){try{localStorage.setItem("nautica_v2",JSON.stringify(db));}catch(e){}}
+const P=()=>db.profiles[db.active];
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+const $=id=>document.getElementById(id);
+const app=$("app");
+let tab="sum", run=null, msg="", confirmReset=false, confirmDel=false;
+
+
+/* ---------- PRACTICAR ---------- */
+function wrongIds(){return Object.keys(P().wrong).map(Number).filter(id=>byId[id]).sort((a,b)=>a-b);}
+function renderMenu(){
+  const p=P(), w=wrongIds().length, acc=p.a?Math.round(100*p.c/p.a):0;
+  const names=Object.keys(db.profiles);
+  app.innerHTML=`
+  ${msg?`<div class="notice" role="status">${esc(msg)}</div>`:""}
+  <div class="card"><strong style="font-family:'Barlow Semi Condensed',sans-serif;font-size:20px">¿Quién practica?</strong>
+    <div class="chips">${names.map((n,i)=>`<button data-p="${i}" class="${n===db.active?"on":""}">${esc(n)}</button>`).join("")}</div>
+    <div class="addrow"><input id="newname" maxlength="20" placeholder="Nombre nuevo (ej: Mamá)" aria-label="Nombre de la persona nueva"><button class="btn small" id="addp">Agregar</button></div>
+    <p class="muted" style="margin:10px 0 0">Cada persona tiene sus propios errores y estadísticas. Se guardan en este dispositivo.</p>
+  </div>
+  <div class="stats"><span>Perfil: <b>${esc(db.active)}</b></span><span>Respondidas: <b>${p.a}</b></span><span>Aciertos: <b>${p.a?acc+"%":"-"}</b></span><span>Preguntas: <b>${Q.length}</b></span></div>
+  <div class="menu">
+    <button class="big ${w?"hot":""}" data-m="errors"><strong>Mis errores (${w})</strong><span>${w?"Las que fallaste vos. Si acertás una, sale de la lista.":"Todavía no tenés errores guardados. Aparecen acá cuando falles una pregunta."}</span></button>
+    <button class="big" data-m="exam"><strong>Simulacro de 30 preguntas</strong><span>Sin corrección hasta el final, como en un examen. Después ves las que fallaste con la explicación.</span></button>
+    <button class="big" data-m="random"><strong>Todas mezcladas</strong><span>Las ${Q.length} preguntas en orden aleatorio, con explicación al responder.</span></button>
+    <button class="big" data-m="order"><strong>Todas en orden del manual</strong><span>De la 1 a la 130, para repasar siguiendo el PDF.</span></button>
+    <div class="card"><strong style="font-family:'Barlow Semi Condensed',sans-serif;font-size:20px">Por tema</strong>
+      <div class="chips">${Object.keys(SECS).map(k=>`<button data-sec="${k}">${SECS[k]} (${Q.filter(q=>q[1]===k).length})</button>`).join("")}</div>
+    </div>
+  </div>
+  <p class="muted" style="margin-top:18px">
+    ${confirmReset?`¿Borrar el progreso de ${esc(db.active)}? <button class="link" id="reset2">Sí, borrar</button> · <button class="link" id="cancel">Cancelar</button>`:`<button class="link" id="reset">Borrar el progreso de ${esc(db.active)}</button>`}
+    ${names.length>1?` · ${confirmDel?`¿Eliminar el perfil ${esc(db.active)}? <button class="link" id="del2">Sí, eliminar</button> · <button class="link" id="cancel2">Cancelar</button>`:`<button class="link" id="del">Eliminar este perfil</button>`}`:""}
+  </p>`;
+  msg="";
+  app.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>startMode(b.dataset.m));
+  app.querySelectorAll("[data-sec]").forEach(b=>b.onclick=()=>start(Q.filter(q=>q[1]===b.dataset.sec).map(q=>q[0]),{mode:"sec",title:SECS[b.dataset.sec]}));
+  app.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>{db.active=names[Number(b.dataset.p)];save();confirmReset=confirmDel=false;renderMenu();});
+  $("addp").onclick=addProfile;
+  $("newname").onkeydown=e=>{if(e.key==="Enter")addProfile();};
+  if($("reset")) $("reset").onclick=()=>{confirmReset=true;renderMenu();};
+  if($("cancel")) $("cancel").onclick=()=>{confirmReset=false;renderMenu();};
+  if($("reset2")) $("reset2").onclick=()=>{db.profiles[db.active]={wrong:{},a:0,c:0};save();confirmReset=false;msg="Progreso borrado.";renderMenu();};
+  if($("del")) $("del").onclick=()=>{confirmDel=true;renderMenu();};
+  if($("cancel2")) $("cancel2").onclick=()=>{confirmDel=false;renderMenu();};
+  if($("del2")) $("del2").onclick=()=>{delete db.profiles[db.active];db.active=Object.keys(db.profiles)[0];save();confirmDel=false;msg="Perfil eliminado.";renderMenu();};
+}
+function addProfile(){
+  const n=$("newname").value.trim();
+  if(!n){msg="Escribí un nombre para agregar a la persona.";return renderMenu();}
+  if(db.profiles[n]){msg="Ya existe un perfil con ese nombre. Elegilo arriba.";return renderMenu();}
+  db.profiles[n]={wrong:{},a:0,c:0}; db.active=n; save(); msg="Perfil creado: "+n+".";
+  renderMenu();
+}
+function startMode(m){
+  const all=Q.map(q=>q[0]);
+  if(m==="errors"){const w=wrongIds(); if(!w.length){msg="No tenés errores guardados. Probá con el simulacro.";return renderMenu();} start(shuffle(w),{mode:"errors",title:"Mis errores"});}
+  else if(m==="exam") start(shuffle(all).slice(0,30),{mode:"exam",exam:true,title:"Simulacro"});
+  else if(m==="random") start(shuffle(all),{mode:"random",title:"Todas mezcladas"});
+  else start(all,{mode:"order",title:"En orden"});
+}
+function start(ids,o){run={ids,i:0,exam:!!o.exam,mode:o.mode,title:o.title,res:{},order:{},confirmExit:false};renderQ();window.scrollTo(0,0);}
+
+function flagSVG(){return `<svg class="flag" viewBox="0 0 120 80" role="img" aria-label="Bandera Alfa: mitad blanca a la izquierda, mitad azul con corte en V a la derecha"><rect width="120" height="80" fill="#fff"/><polygon points="60,0 120,0 90,40 120,80 60,80" fill="#0b3d91"/></svg>`;}
+
+function renderQ(){
+  if(run.i>=run.ids.length) return renderEnd();
+  const id=run.ids[run.i], q=byId[id], n=run.ids.length, no=nOk(q), opts=optsOf(q);
+  if(!run.order[id]) run.order[id]=shuffle(opts.map((_,i)=>i));
+  const ans=run.res[id], done=ans!==undefined, showFb=done&&!run.exam;
+  let html=`<div class="topline"><span>${esc(run.title)}: ${run.i+1} de ${n}</span><button class="link" id="exit">${run.confirmExit?"Tocá de nuevo para salir (se pierde el intento)":"Salir"}</button></div>
+  <div class="bar"><i style="width:${Math.round(100*(run.i+(done?1:0))/n)}%"></i></div>
+  <div class="card">
+  <div class="muted" style="margin-bottom:4px">${label(id)}, ${SECS[q[1]]}</div>
+  ${id===58?flagSVG():""}
+  <p class="q">${esc(q[2])}</p><div class="opts">`;
+  run.order[id].forEach(idx=>{
+    let cls="opt";
+    if(done){
+      if(run.exam){ if(idx===ans) cls+=" sel"; }
+      else { if(idx<no) cls+=" ok"; else if(idx===ans) cls+=" bad"; }
+    }
+    html+=`<button class="${cls}" data-i="${idx}" ${done?"disabled":""}>${esc(opts[idx])}</button>`;
+  });
+  html+=`</div>`;
+  if(showFb){
+    const ok=ans<no;
+    html+=`<div class="fb ${ok?"ok":"bad"}" role="status"><strong>${ok?"Correcto":"Incorrecto"}</strong>${ok?"":`<p>La correcta es: <b>${esc(okText(q))}</b></p>`}<p>${esc(q[6])}</p></div>`;
+  }
+  html+=`</div><div class="nav"><button class="btn ghost" id="prev" ${run.i===0?"disabled":""}>Anterior</button><button class="btn" id="next" ${done?"":"disabled"}>${run.i===n-1?"Terminar":"Siguiente"}</button></div>`;
+  app.innerHTML=html;
+  app.querySelectorAll(".opt").forEach(b=>b.onclick=()=>choose(id,Number(b.dataset.i)));
+  $("exit").onclick=()=>{ if(run.exam&&!run.confirmExit){run.confirmExit=true;renderQ();} else {run=null;renderMenu();} };
+  $("prev").onclick=()=>{run.i--;run.confirmExit=false;renderQ();};
+  $("next").onclick=()=>{run.i++;run.confirmExit=false;renderQ();window.scrollTo(0,0);};
+}
+function choose(id,idx){
+  if(run.res[id]!==undefined) return;
+  const q=byId[id], p=P(), ok=idx<nOk(q);
+  run.res[id]=idx; p.a++; if(ok) p.c++;
+  if(!ok) p.wrong[id]=1;
+  else if(run.mode==="errors") delete p.wrong[id];
+  save(); renderQ();
+}
+function renderEnd(){
+  const n=run.ids.length;
+  const miss=run.ids.filter(id=>run.res[id]===undefined||run.res[id]>=nOk(byId[id]));
+  const good=n-miss.length;
+  let html=`<div class="card"><h2>${esc(run.title)}: terminaste</h2><div class="score">${good} / ${n}</div>
+  <p class="muted" style="margin:4px 0 0">${miss.length?"Las que fallaste quedaron guardadas en los errores de "+esc(db.active)+".":"Sin errores. Muy bien."}</p></div>`;
+  if(miss.length){
+    html+=`<div class="card"><h3>Lo que fallaste</h3>`;
+    miss.forEach(id=>{
+      const q=byId[id], a=run.res[id];
+      if(a===undefined){ P().wrong[id]=1; }
+      html+=`<div class="rev"><div class="t">${esc(label(id))}: ${esc(q[2])}</div>
+      ${a!==undefined?`<div class="a">Tu respuesta: ${esc(optsOf(q)[a])}</div>`:`<div class="a">Sin responder</div>`}
+      <div class="c">Correcta: ${esc(okText(q))}</div><div class="muted" style="margin-top:4px">${esc(q[6])}</div></div>`;
+    });
+    html+=`</div>`; save();
+  }
+  html+=`<div class="nav"><button class="btn ghost" id="again">Volver al menú</button>${miss.length&&run.mode!=="errors"?`<button class="btn" id="retry">Repetir las falladas</button>`:""}</div>`;
+  app.innerHTML=html;
+  $("again").onclick=()=>{run=null;renderMenu();window.scrollTo(0,0);};
+  if($("retry")) $("retry").onclick=()=>start(shuffle(miss),{mode:"errors",title:"Repaso de falladas"});
+}
+
+load(); renderMenu();
+</script>
+</body>
+</html>
